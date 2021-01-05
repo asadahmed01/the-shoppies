@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import { getAll } from "./data";
+import MovieList from "./movieList";
+import Nominated from "./nominated";
 
 class SearchBar extends Component {
   state = {
     movies: [],
     search: [],
+    nominated: [],
     value: "",
   };
 
@@ -20,11 +23,18 @@ class SearchBar extends Component {
       return m.title.toLowerCase().startsWith(value.toLowerCase());
     });
     this.setState({ search: item });
-    console.log(this.state.search);
+  };
+
+  handleNominate = (id) => {
+    console.log(id);
+    const movies = [...this.state.search];
+    const nominated = movies.filter((m) => m.id === id);
+    this.setState({ nominated: [...this.state.nominated, ...nominated] });
+    console.log(nominated);
   };
   render() {
     return (
-      <div className="container mt-5">
+      <div className="container mt-5 bg-light p-5">
         <input
           value={this.state.value}
           type="text"
@@ -33,11 +43,13 @@ class SearchBar extends Component {
           onChange={this.handleChange}
         />
 
-        <ul>
-          {this.state.search.map((m) => (
-            <h1>{m.title}</h1>
-          ))}
-        </ul>
+        <MovieList
+          movies={this.state.search}
+          onNominate={this.handleNominate}
+        />
+        <div>
+          <Nominated list={this.state.nominated} />
+        </div>
       </div>
     );
   }
