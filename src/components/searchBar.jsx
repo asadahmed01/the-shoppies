@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { toast } from "react-toastify";
 import { getAll } from "./data";
 import MovieList from "./movieList";
 import Nominated from "./nominated";
@@ -9,6 +10,7 @@ class SearchBar extends Component {
     search: [],
     nominated: [],
     value: "",
+    isButtonDisabled: -1,
   };
 
   componentDidMount() {
@@ -26,15 +28,35 @@ class SearchBar extends Component {
   };
 
   handleNominate = (id) => {
-    console.log(id);
-    const movies = [...this.state.search];
-    const nominated = movies.filter((m) => m.id === id);
-    this.setState({ nominated: [...this.state.nominated, ...nominated] });
+    const { search, nominated } = this.state;
+    this.setState({ isButtonDisabled: id });
+    const movies = [...search];
+    const nominatedMovies = movies.filter((m) => m.id === id);
+    this.setState({
+      nominated: [...nominated, ...nominatedMovies],
+    });
+
+    if (nominated.length === 4) {
+      toast.success("You have nominated 5 movies.", {
+        position: "top-center",
+        hideProgressBar: true,
+        autoClose: 1500,
+      });
+      return;
+    }
+  };
+
+  handleRemove = (id) => {
+    const { nominated } = this.state;
+    const filtered = [...nominated];
+    const removed = filtered.filter((movie) => movie.id !== id);
+    this.setState({ nominated: removed });
     console.log(nominated);
   };
+
   render() {
     return (
-      <div className="container mt-5 bg-light p-5">
+      <div className="container mt-5 bg-light p-5 flex">
         <input
           value={this.state.value}
           type="text"
@@ -42,13 +64,25 @@ class SearchBar extends Component {
           className="form-control"
           onChange={this.handleChange}
         />
+        <div className="row">
+          <div className="col-6">
+            <h3>
+              {this.state.search.length > 0 &&
+                `Results for "${this.state.value}"`}
+            </h3>
+            <MovieList
+              movies={this.state.search}
+              onNominate={this.handleNominate}
+              status={this.state.isButtonDisabled}
+            />
+          </div>
 
-        <MovieList
-          movies={this.state.search}
-          onNominate={this.handleNominate}
-        />
-        <div>
-          <Nominated list={this.state.nominated} />
+          <div className="col-6">
+            <Nominated
+              list={this.state.nominated}
+              onRemove={this.handleRemove}
+            />
+          </div>
         </div>
       </div>
     );
