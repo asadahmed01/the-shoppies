@@ -29,7 +29,7 @@ class SearchBar extends Component {
     const api = process.env.REACT_APP_MOVIES_API_KEY;
 
     axios
-      .get(`http://www.omdbapi.com/?apikey=${api}&s=${value}`)
+      .get(`https://www.omdbapi.com/?apikey=${api}&s=${value}`)
       .then((res) => res.data)
       .then((res) => {
         if (!res.Search) {
