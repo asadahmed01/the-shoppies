@@ -88,7 +88,7 @@ class SearchBar extends Component {
           className="form-control"
           onChange={this.handleChange}
         />
-        <div className="row">
+        <div className="row texti-left">
           <div className="col-6">
             <h3>
               {this.state.search.length > 0 &&
@@ -101,7 +101,7 @@ class SearchBar extends Component {
             />
           </div>
 
-          <div className="col-6">
+          <div className="col-6 text-left">
             <Nominated
               list={this.state.nominated}
               onRemove={this.handleRemove}

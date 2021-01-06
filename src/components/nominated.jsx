@@ -2,7 +2,7 @@ import React from "react";
 
 const Nominated = ({ list, onRemove }) => {
   return (
-    <div className="bg-white mt-4">
+    <div className="bg-white mt-4 text-left">
       <h3>{list.length > 0 && "Nominated"}</h3>
       {!list.length ? (
         ""
