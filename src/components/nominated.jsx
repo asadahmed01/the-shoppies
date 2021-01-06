@@ -6,11 +6,11 @@ const Nominated = ({ list, onRemove }) => {
       <h3>{list.length > 0 && "Nominated"}</h3>
       <ul className="list-group">
         {list.map((item) => (
-          <li key={item.id} className="list-group-item border-0 ">
-            {item.title} ({item.year}){" "}
+          <li key={item.imdbID} className="list-group-item border-0 ">
+            {item.Title} ({item.Year}){" "}
             <button
               className="btn btn-danger"
-              onClick={() => onRemove(item.id)}
+              onClick={() => onRemove(item.imdbID)}
             >
               Remove
             </button>
