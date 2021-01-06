@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { Component } from "react";
+import testUtils from "react-dom/test-utils";
 import { toast } from "react-toastify";
-import { getAll } from "./data";
 import MovieList from "./movieList";
 import Nominated from "./nominated";
 
@@ -16,8 +16,9 @@ class SearchBar extends Component {
   };
 
   componentDidMount() {
-    const items = getAll();
-    //this.setState({ movies: items });
+    const data = JSON.parse(localStorage.getItem("nominated") || "[]");
+
+    this.setState({ nominated: data });
   }
 
   handleChange = async (event) => {
@@ -27,16 +28,6 @@ class SearchBar extends Component {
     /////
     const api = process.env.REACT_APP_MOVIES_API_KEY;
 
-    // try {
-    //   const { data } = await axios.get(
-    //     `http://www.omdbapi.com/?apikey=${api}&s=${value}`
-    //   );
-    //   this.setState({ movies: data.Search });
-    //   console.log(movies);
-    // } catch (error) {
-    //   console.error(error);
-    // }
-
     axios
       .get(`http://www.omdbapi.com/?apikey=${api}&s=${value}`)
       .then((res) => res.data)
@@ -44,14 +35,13 @@ class SearchBar extends Component {
         if (!res.Search) {
           return;
         }
-        this.setState({ movies: res.Search });
+        this.setState({ movies: [...this.state.movies, res.Search] }); //movies: res.Search
         const moviesList = res.Search;
         const item = moviesList.filter((m) => {
           return m.Title.toLowerCase().includes(value.toLowerCase());
         });
         this.setState({ search: item });
       });
-    console.log(movies);
   };
 
   handleNominate = (id) => {
@@ -59,9 +49,10 @@ class SearchBar extends Component {
     this.setState({ isButtonDisabled: id });
     const movies = [...search];
     const nominatedMovies = movies.filter((m) => m.imdbID === id);
-    this.setState({
-      nominated: [...nominated, ...nominatedMovies],
-    });
+
+    this.setState({ nominated: [...this.state.nominated, ...nominatedMovies] });
+    console.log(this.state.nominated);
+    //persist it to the local storage
     localStorage.setItem("nominated", JSON.stringify(nominated));
     if (nominated.length === 4) {
       toast.success("You have nominated 5 movies.", {
@@ -79,10 +70,15 @@ class SearchBar extends Component {
     const filtered = [...nominated];
     const removed = filtered.filter((movie) => movie.imdbID !== id);
     this.setState({ nominated: removed });
-    console.log(nominated);
+    //remove from the localstorage
+    const items = JSON.parse(localStorage.getItem("nominated"));
+    const filterStorage = items.filter((item) => item.imdbID !== id);
+    //put back to the storage
+    localStorage.setItem("nominated", JSON.stringify(filterStorage));
   };
 
   render() {
+    //console.log(this.state.nominated);
     return (
       <div className="container mt-5 bg-light p-5 flex">
         <input
