@@ -74,6 +74,11 @@ class SearchBar extends Component {
     const items = JSON.parse(localStorage.getItem("nominated"));
     const filterStorage = items.filter((item) => item.imdbID !== id);
     //put back to the storage
+    toast.error("Move deleted from the list", {
+      position: "top-center",
+      autoClose: 1500,
+      hideProgressBar: true,
+    });
     localStorage.setItem("nominated", JSON.stringify(filterStorage));
   };
 
