@@ -86,6 +86,7 @@ class SearchBar extends Component {
     //console.log(this.state.nominated);
     return (
       <div className="container mt-5 bg-light p-5 flex">
+        <h1 className="mb-5">Shoppies: Movie awards for entrepreneurs</h1>
         <input
           value={this.state.value}
           type="text"
